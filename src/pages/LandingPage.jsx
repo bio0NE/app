@@ -175,7 +175,7 @@ const slideVariants = {
               <motion.img
                 variants={fadeUp}
                 src="/icon.png"
-                alt="Solid Security Icon"
+                alt="Solid Security icon"
                 className="mx-auto h-40 w-40 mb-6 drop-shadow-2xl"
               />
 
@@ -448,7 +448,7 @@ const slideVariants = {
                   <Button className="bg-[#7C3AED] px-6 py-3 rounded-2xl">Launch Dashboard</Button>
                 </Link>
                 <a href="https://t.me/SolidSecurity" target="_blank" rel="noreferrer">
-                  <Button variant="outline" className="border-[#14F195]/30 text-[#14F195] px-6 py-3 rounded-2xl">Join Community</Button>
+                  <Button variant="outline" className="border-[#14F195]/30 text-[#14F195] px-6 py-3 rounded-2xl">Visit Our Social</Button>
                 </a>
               </div>
             </motion.div>
@@ -491,7 +491,7 @@ const slideVariants = {
   </a>
 
   <a
-    href="https://github.com/SolidSecurity"
+    href="https://github.com/Solsec-SolidSecurity"
     target="_blank"
     rel="noopener noreferrer"
     className="hover:text-[#14F195]"
