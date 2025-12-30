@@ -115,18 +115,20 @@
                         <CardDescription>Need help? Join our community channels.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <a href="#" onClick={(e) => { e.preventDefault(); toast({title: "This is a placeholder link."})}} target="_blank" rel="noopener noreferrer" className="block">
-                            <Button variant="outline" className="w-full justify-between border-gray-600 hover:bg-gray-800 hover:text-white">
-                                <span>Join our Telegram</span>
-                                <ExternalLink className="w-4 h-4" />
-                            </Button>
-                        </a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); toast({title: "This is a placeholder link."})}} target="_blank" rel="noopener noreferrer" className="block">
-                             <Button variant="outline" className="w-full justify-between border-gray-600 hover:bg-gray-800 hover:text-white">
-                                <span>Follow us on X (Twitter)</span>
-                                <ExternalLink className="w-4 h-4" />
-                            </Button>
-                        </a>
+                      <a
+                        href="https://x.com/SOLSEC_OFC"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block"
+                      >
+                        <Button
+                          variant="outline"
+                          className="w-full justify-between border-gray-600 hover:bg-gray-800 hover:text-white"
+                        >
+                          <span>Follow us on X (Twitter)</span>
+                          <ExternalLink className="w-4 h-4" />
+                        </Button>
+                      </a>
                     </CardContent>
                 </Card>
             </div>

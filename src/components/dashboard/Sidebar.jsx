@@ -63,7 +63,13 @@
           <aside className={`fixed md:relative z-30 inset-y-0 left-0 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-gray-900/80 backdrop-blur-lg border-r border-white/10 flex flex-col`}>
             <div className="flex items-center justify-between h-20 px-6 border-b border-white/10">
               <Link to="/dashboard" className="flex items-center space-x-2">
-                <img alt="Solid Security Logo" className="h-8 w-8" src="/logo.svg"/>
+                <img
+                src="/icon.png"
+                alt="Solid Security"
+                className="h-10 w-10 drop-shadow"
+                whileHover={{ rotate: 6, scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              />
                 <span className="text-xl font-bold text-white">Solid Security</span>
               </Link>
               <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400 hover:text-white">
