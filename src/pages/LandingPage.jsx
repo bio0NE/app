@@ -129,7 +129,7 @@ const slideVariants = {
           <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-20">
             <div className="flex items-center gap-3">
               <motion.img
-                src="/icon.png"
+                src="/Icon.png"
                 alt="Solid Security"
                 className="h-10 w-10 drop-shadow"
                 whileHover={{ rotate: 6, scale: 1.05 }}
@@ -173,7 +173,7 @@ const slideVariants = {
             >
               <motion.img
                 variants={fadeUp}
-                src="/icon.png"
+                src="/Icon.png"
                 alt="Solid Security Icon"
                 className="mx-auto h-40 w-40 mb-6 drop-shadow-2xl"
               />
