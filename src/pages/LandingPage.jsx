@@ -130,7 +130,7 @@ const slideVariants = {
           <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-20">
             <div className="flex items-center gap-3">
               <motion.img
-                src="/icon.png"
+                src="/logotrans.png"
                 alt="Solid Security"
                 className="h-10 w-10 drop-shadow"
                 whileHover={{ rotate: 6, scale: 1.05 }}
@@ -174,7 +174,7 @@ const slideVariants = {
             >
               <motion.img
                 variants={fadeUp}
-                src="/icon.png"
+                src="/logotrans.png"
                 alt="Solid Security icon"
                 className="mx-auto h-40 w-40 mb-6 drop-shadow-2xl"
               />
@@ -447,7 +447,7 @@ const slideVariants = {
                 <Link to="/dashboard">
                   <Button className="bg-[#7C3AED] px-6 py-3 rounded-2xl">Launch Dashboard</Button>
                 </Link>
-                <a href="https://t.me/SolidSecurity" target="_blank" rel="noreferrer">
+                <a href="https://x.com/Secure_ursol" target="_blank" rel="noreferrer">
                   <Button variant="outline" className="border-[#14F195]/30 text-[#14F195] px-6 py-3 rounded-2xl">Visit Our Social</Button>
                 </a>
               </div>
@@ -464,7 +464,7 @@ const slideVariants = {
 
 <div className="flex items-center gap-6 text-sm">
   <a
-    href="https://docs.solsec.xyz/"
+    href="https://documentation.solsec.xyz/"
     target="_blank"
     rel="noopener noreferrer"
     className="hover:text-[#14F195]"
@@ -482,7 +482,7 @@ const slideVariants = {
   </a>
 
   <a
-    href="https://x.com/SOLSEC_OFC"
+    href="https://x.com/Secure_ursol"
     target="_blank"
     rel="noopener noreferrer"
     className="hover:text-[#14F195]"

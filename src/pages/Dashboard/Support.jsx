@@ -116,7 +116,7 @@
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <a
-                        href="https://x.com/SOLSEC_OFC"
+                        href="https://x.com/Secure_ursol"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="block"

@@ -64,7 +64,7 @@
             <div className="flex items-center justify-between h-20 px-6 border-b border-white/10">
               <Link to="/dashboard" className="flex items-center space-x-2">
                 <img
-                src="/icon.png"
+                src="/logotrans.png"
                 alt="Solid Security"
                 className="h-10 w-10 drop-shadow"
                 whileHover={{ rotate: 6, scale: 1.05 }}

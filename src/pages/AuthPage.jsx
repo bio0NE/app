@@ -104,7 +104,7 @@ const AuthPage = () => {
 
         <div className="z-10 w-full max-w-md">
           <div className="text-center mb-8">
-            <img alt="Solid Security Logo" className="h-16 w-16 mx-auto mb-4" src="/logo.svg" />
+            <img alt="Solid Security Logo" className="h-20 w-20 mx-auto mb-5" src="/logotrans.png" />
             <h1 className="text-4xl font-bold text-white">
               {authMode === 'signin' ? 'Welcome Back' : 'Create Account'}
             </h1>
