@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { supabase } from '@/lib/supabaseClient';
+import { api } from '@/lib/api';
 
 const ContractVerifier = () => {
   const { toast } = useToast();
@@ -17,58 +17,56 @@ const ContractVerifier = () => {
   const [result, setResult] = useState(null);
 
   const handleScan = async (e) => {
-  e.preventDefault();
-  if (!address.trim()) {
-    return toast({ variant: 'destructive', title: 'Contract Address required' });
-  }
+    e.preventDefault();
+    if (!address.trim()) {
+      return toast({ variant: 'destructive', title: 'Contract Address required' });
+    }
 
-  setIsLoading(true);
-  setResult(null);
+    setIsLoading(true);
+    setResult(null);
 
-  try {
-    // --- Fetch token data ---
-    const tokenRes = await supabase.functions.invoke('getTokenData', {
-      body: { address: address.trim(), network },
-    });
+    try {
+      // --- Fetch token data ---
+      const tokenData = await api.post('/getTokenData', {
+        address: address.trim(),
+        network,
+      });
 
-    if (tokenRes.error) throw tokenRes.error;
-    const tokenData = tokenRes.data;
-    if (!tokenData) throw new Error('No token data returned');
+      if (!tokenData) throw new Error('No token data returned');
 
-    // --- Analyze token with AI ---
-    const aiRes = await supabase.functions.invoke('analyzeTokenAI', {
-      body: { ...tokenData },
-    });
+      // --- Analyze token with AI ---
+      const aiData = await api.post('/analyzeTokenAI', {
+        ...tokenData,
+      });
 
-    if (aiRes.error) throw aiRes.error;
-    const aiData = aiRes.data;
-    if (!aiData) throw new Error('AI analysis returned no data');
+      if (!aiData) throw new Error('AI analysis returned no data');
 
-    // --- Set unified result ---
-    setResult({
-      address: address.trim(),
-      network,
-      name: tokenData.tokenData?.name || 'Unknown Token',
-      solBalance: tokenData.solBalance || 0,
-      txCount: tokenData.txCount || 0,
-      aiResult: aiData.aiResult,
-    });
+      // --- Set unified result ---
+      // Backend now returns flat numbers, so toFixed() is safe
+      setResult({
+        address: address.trim(),
+        network,
+        name: tokenData.name || 'Unknown Token',
+        solBalance: tokenData.solBalance || 0,
+        txCount: tokenData.txCount || 0,
+        aiResult: aiData.aiResult,
+      });
 
-    toast({
-      title: 'Analysis Complete ✅',
-      description: `AI Score: ${aiData.aiResult?.score ?? 0}/100`,
-    });
-  } catch (err) {
-    console.error('Verification error:', err);
-    toast({
-      variant: 'destructive',
-      title: 'Verification Failed',
-      description: err.message || 'An unexpected error occurred.',
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
+      toast({
+        title: 'Analysis Complete ✅',
+        description: `AI Score: ${aiData.aiResult?.score ?? 0}/100`,
+      });
+    } catch (err) {
+      console.error('Verification error:', err);
+      toast({
+        variant: 'destructive',
+        title: 'Verification Failed',
+        description: err.message || 'An unexpected error occurred.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>

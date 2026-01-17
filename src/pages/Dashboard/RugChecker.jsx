@@ -5,9 +5,9 @@ import {
   ShieldCheck,
   Search,
   Loader2,
-  Wallet,
   AlertTriangle,
   Activity,
+  Coins,
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
@@ -21,9 +21,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Dialog } from '@headlessui/react';
-import { supabase } from '@/lib/supabaseClient';
+import { api } from '@/lib/api';
 
-const WalletScanner = () => {
+const RugChecker = () => {
   const { toast } = useToast();
   const [address, setAddress] = useState('');
   const [network, setNetwork] = useState('mainnet-beta');
@@ -32,14 +32,14 @@ const WalletScanner = () => {
   const [showDebug, setShowDebug] = useState(false);
   const [isOwnerModalOpen, setIsOwnerModalOpen] = useState(false);
 
-  // --- Main function to call Supabase Edge Function ---
+  // --- Main function to call API ---
   const handleScan = async (e) => {
     e.preventDefault();
 
     if (!address.trim()) {
       toast({
         variant: 'destructive',
-        title: 'Wallet address is required ⚠️',
+        title: 'Token address is required ⚠️',
       });
       return;
     }
@@ -48,45 +48,32 @@ const WalletScanner = () => {
     setResult(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('scanWallet', {
-        body: { address: address.trim(), network },
+      const tokenData = await api.post('/getTokenData', {
+        address: address.trim(),
+        network
       });
 
-      if (error) {
-        console.error('Supabase function error:', error);
+      if (!tokenData) {
         toast({
-          variant: 'destructive',
-          title: 'Scan Failed ❌',
-          description: error.message || 'Failed to connect to scan service.',
-        });
-        setResult({
-          address: address.trim(),
-          analysis: { solBalance: 0, txCount: 0, flags: [] },
-          score: 0,
+          title: 'Token Not Found ⚠️',
+          description: 'Could not fetch token data.',
         });
         return;
       }
 
-      if (!data || !data.analysis) {
-        toast({
-          title: 'Wallet Found 🪙',
-          description: 'Wallet is valid but has no transactions or SOL balance.',
-        });
-        setResult({
-          address: address.trim(),
-          analysis: { solBalance: 0, txCount: 0, flags: [] },
-          score: 0,
-        });
-        return;
-      }
+      // Get AI analysis
+      const aiRes = await api.post('/analyzeTokenAI', {
+        ...tokenData
+      });
 
-      setResult(data);
+      setResult({ ...tokenData, aiResult: aiRes.aiResult });
+
       toast({
         title: 'Scan Complete ✅',
-        description: `Wallet ${address.slice(0, 6)}... scanned successfully.`,
+        description: `Token ${tokenData.symbol || address.slice(0, 6)} analyzed.`,
       });
     } catch (err) {
-      console.error('Function call error:', err);
+      console.error('API call error:', err);
       toast({
         variant: 'destructive',
         title: 'Unexpected Error ⚠️',
@@ -100,7 +87,7 @@ const WalletScanner = () => {
   return (
     <>
       <Helmet>
-        <title>Wallet Scanner | Solid Security</title>
+        <title>Rug Checker | Solid Security</title>
       </Helmet>
 
       <motion.div
@@ -111,20 +98,20 @@ const WalletScanner = () => {
         {/* --- Header --- */}
         <div className="flex items-center space-x-4 mb-8">
           <div className="p-3 bg-gray-800/50 rounded-lg border border-gray-700 solana-glow-teal">
-            <ShieldCheck className="w-8 h-8 text-solana-green" />
+            <AlertTriangle className="w-8 h-8 text-solana-green" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">Wallet Scanner</h1>
+            <h1 className="text-3xl font-bold text-white">Rug Checker</h1>
             <p className="text-gray-400">
-              Analyze any Solana wallet for balance, activity, and risk factors (powered by Helius).
+              Analyze any Solana token for rug pull indicators and liquidity risks.
             </p>
           </div>
         </div>
 
-        {/* --- Wallet Scan Form --- */}
+        {/* --- Scan Form --- */}
         <Card className="glassmorphism">
           <CardHeader>
-            <CardTitle className="text-white">Scan a Wallet Address</CardTitle>
+            <CardTitle className="text-white">Check a Token Address</CardTitle>
           </CardHeader>
           <CardContent>
             <form
@@ -132,7 +119,7 @@ const WalletScanner = () => {
               className="flex flex-col sm:flex-row items-center gap-4"
             >
               <Input
-                placeholder="Enter Solana wallet address..."
+                placeholder="Enter Solana token address..."
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="bg-gray-900/70 border-gray-700 text-white focus:solana-glow-purple"
@@ -157,7 +144,7 @@ const WalletScanner = () => {
                   ) : (
                     <Search className="w-5 h-5" />
                   )}
-                  <span className="ml-2">Scan</span>
+                  <span className="ml-2">Check</span>
                 </Button>
               </div>
             </form>
@@ -175,36 +162,34 @@ const WalletScanner = () => {
             <Card className="glassmorphism">
               <CardHeader>
                 <CardTitle className="text-white">
-                  Scan Result:{' '}
-                  <span className="font-mono text-sm text-gray-400 break-all">
-                    {result.address}
-                  </span>
+                  Result: <span className="text-solana-green">{result.name} ({result.symbol})</span>
                 </CardTitle>
+                <div className="text-sm text-gray-400 font-mono mt-1">{result.address}</div>
               </CardHeader>
               <CardContent>
-                {/* --- Wallet Summary --- */}
+                {/* --- Summary --- */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                   <div className="p-4 bg-gray-900/50 rounded-lg">
-                    <Wallet className="mx-auto text-solana-green w-6 h-6 mb-2" />
-                    <p className="text-sm text-gray-400">Balance</p>
+                    <Coins className="mx-auto text-solana-green w-6 h-6 mb-2" />
+                    <p className="text-sm text-gray-400">Liquidity</p>
                     <p className="text-2xl font-bold text-white">
-                      {result.analysis?.solBalance ?? 0} SOL
+                      ${result.liquidityUsd?.toLocaleString() ?? 0}
                     </p>
                   </div>
 
                   <div className="p-4 bg-gray-900/50 rounded-lg">
                     <Activity className="mx-auto text-solana-blue w-6 h-6 mb-2" />
-                    <p className="text-sm text-gray-400">Transactions</p>
+                    <p className="text-sm text-gray-400">24h Volume</p>
                     <p className="text-2xl font-bold text-white">
-                      {result.analysis?.txCount ?? 0}
+                      ${result.volume24h?.toLocaleString() ?? 0}
                     </p>
                   </div>
 
                   <div className="p-4 bg-gray-900/50 rounded-lg">
                     <ShieldCheck className="mx-auto text-solana-purple w-6 h-6 mb-2" />
-                    <p className="text-sm text-gray-400">Security Score</p>
-                    <p className="text-2xl font-bold text-white">
-                      {result.score ?? 0}/100
+                    <p className="text-sm text-gray-400">Trust Score</p>
+                    <p className={`text-2xl font-bold ${result.aiResult?.score > 70 ? 'text-green-500' : 'text-red-500'}`}>
+                      {result.aiResult?.score ?? 0}/100
                     </p>
                   </div>
                 </div>
@@ -225,51 +210,13 @@ const WalletScanner = () => {
                     {JSON.stringify(result, null, 2)}
                   </pre>
                 )}
-
-                {/* --- See More Button (opens modal) --- */}
-                <div className="mt-6 text-center">
-                  <Button
-                    className="bg-blue-600 hover:bg-blue-700 font-semibold"
-                    onClick={() => setIsOwnerModalOpen(true)}
-                  >
-                    See More
-                  </Button>
-                </div>
               </CardContent>
             </Card>
           </motion.div>
         )}
       </motion.div>
-
-      {/* --- Subscribe Modal --- */}
-      <Dialog
-        open={isOwnerModalOpen}
-        onClose={() => setIsOwnerModalOpen(false)}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-      >
-        <Dialog.Panel className="bg-gray-900 p-6 rounded-lg max-w-sm w-full text-center">
-          <Dialog.Title className="text-xl font-bold mb-4 text-white">
-            Subscribe Required
-          </Dialog.Title>
-          <Dialog.Description className="text-gray-300 mb-6">
-            To see detailed owner behavior, you need to subscribe.
-          </Dialog.Description>
-          <Button
-            className="bg-blue-600 hover:bg-blue-700 w-full"
-            onClick={() => toast({ title: 'Subscription clicked!' })}
-          >
-            Subscribe Now
-          </Button>
-          <Button
-            className="mt-3 w-full bg-gray-700 hover:bg-gray-600"
-            onClick={() => setIsOwnerModalOpen(false)}
-          >
-            Close
-          </Button>
-        </Dialog.Panel>
-      </Dialog>
     </>
   );
 };
 
-export default WalletScanner;
+export default RugChecker;

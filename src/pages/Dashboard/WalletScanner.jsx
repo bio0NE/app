@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/lib/supabaseClient";
+import { api } from "@/lib/api";
 
 const WalletScanner = () => {
   const { toast } = useToast();
@@ -46,19 +46,10 @@ const WalletScanner = () => {
     setResult(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke("scanWallet", {
-        body: { walletAddress: address.trim(), network },
+      const data = await api.post("/scanWallet", {
+        walletAddress: address.trim(),
+        network,
       });
-
-      if (error) {
-        console.error("Supabase function error:", error);
-        toast({
-          variant: "destructive",
-          title: "Scan Failed ❌",
-          description: error.message || "Failed to connect to scan service.",
-        });
-        return;
-      }
 
       if (!data) {
         toast({
