@@ -46,11 +46,21 @@ const ContractVerifier = () => {
       setResult({
         address: address.trim(),
         network,
+
+        // token info
         name: tokenData.name || 'Unknown Token',
+        price: tokenData.price || 0,
+        marketCap: tokenData.marketCap || 0,
+        liquidity: tokenData.liquidityUsd || 0,
+        volume: tokenData.volume24h || 0,
         solBalance: tokenData.solBalance || 0,
-        txCount: tokenData.txCount || 0,
+
+        pumpfunLink: tokenData.pumpfun_link || null,
+
+        // AI
         aiResult: aiData.aiResult,
       });
+
 
       toast({
         title: 'Analysis Complete ✅',
@@ -126,16 +136,24 @@ const ContractVerifier = () => {
               </CardHeader>
               <CardContent className="space-y-3 text-white">
                 <div className="flex justify-between p-3 bg-gray-900/50 rounded-lg">
-                  <span className="text-gray-400">Network</span>
-                  <span>{result.network}</span>
+                  <span className="text-gray-400">Price</span>
+                  <span>${result.price.toFixed(8)}</span>
                 </div>
                 <div className="flex justify-between p-3 bg-gray-900/50 rounded-lg">
-                  <span className="text-gray-400">Balance</span>
-                  <span>{result.solBalance?.toFixed(6)} SOL</span>
+                  <span className="text-gray-400">Market Cap</span>
+                  <span>${result.marketCap.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between p-3 bg-gray-900/50 rounded-lg">
-                  <span className="text-gray-400">Transactions</span>
-                  <span>{result.txCount}</span>
+                  <span className="text-gray-400">Liquidity</span>
+                  <span>${result.liquidity.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between p-3 bg-gray-900/50 rounded-lg">
+                  <span className="text-gray-400">24h Volume</span>
+                  <span>${result.volume.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between p-3 bg-gray-900/50 rounded-lg">
+                  <span className="text-gray-400">SOL Balance</span>
+                  <span>{result.solBalance.toFixed(6)} SOL</span>
                 </div>
                 <div className="flex justify-between p-3 bg-gray-900/50 rounded-lg">
                   <span className="text-gray-400">Pump Score</span>
@@ -148,6 +166,16 @@ const ContractVerifier = () => {
                     <Brain className="w-5 h-5 mr-3 mt-1 text-blue-300 flex-shrink-0" />
                     <p className="text-sm">{result.aiResult.reason}</p>
                   </div>
+                )}
+                {result.pumpfunLink && (
+                  <a
+                    href={result.pumpfunLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-center mt-4 text-solana-green font-semibold hover:underline"
+                  >
+                    View on Pump.fun →
+                  </a>
                 )}
               </CardContent>
             </Card>
